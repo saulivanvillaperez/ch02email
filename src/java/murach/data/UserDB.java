@@ -108,4 +108,31 @@ public class UserDB {
             pool.freeConnection(connection);
         }
     }//fin del método getAllUsers
+    
+    /**
+     * Elimina un usuario de la base de datos
+     * @param email // email del usuario a eliminar 
+     * @return 
+     */
+    public static int delete(String email) {
+        ConnectionPool pool = ConnectionPool.getInstance();
+        Connection connection = pool.getConnection();
+        PreparedStatement ps = null;
+
+        String query = "DELETE FROM user "
+                + "WHERE Email = ?";
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, email);
+
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+            Error.descripcion = e.getMessage();
+            return 0;
+        } finally {
+            DBUtil.closePreparedStatement(ps);
+            pool.freeConnection(connection);
+        }
+    }
 }
