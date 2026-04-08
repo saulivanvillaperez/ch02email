@@ -10,8 +10,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import murach.business.Rol;
 import murach.business.User;
-import murach.data.UserDB;
+import murach.data.RolDB;
+import murach.data.UserDB;  
 
 /**
  *
@@ -31,17 +33,29 @@ public class EmailListServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String url = "/index.html";
+        String url = "/index.jsp";
+        
+       
 
         //get current action
         String action = request.getParameter("action");
+        
         if (action == null) {
             action = "join"; //default action
         }
 
         // perform action and set URL to appropiate page
-        if (action.equals("join")) {            
-            url = "/index.html";
+        if (action.equals("join")) {
+                      
+             //  creamos una lista para recuperar todos los roles y mostrarlos en
+            // select
+            List<Rol> roles = RolDB.getAllRols();
+            
+            // creamos el atributo roles para pasarlo mediante el método request
+            // a la página de index.jsp
+            request.setAttribute("roles", roles); 
+            
+            url = "/index.jsp";
         } else if(action.equals("modificar")){ //condicional para realizar modificaciones
             //obtenemos el email pasado como parámetro
             String email = request.getParameter("email");
@@ -112,16 +126,19 @@ public class EmailListServlet extends HttpServlet {
             // especificamos la página a mostrar
             url = "/listado-de-usuarios.jsp";
         } else if (action.equals("add")) {
-            //getParameters from the request
-            request.setCharacterEncoding("utf-8");
-            response.setCharacterEncoding("utf-8");
+            // se obtienen los datos del formulario para registrar un nuevo usuario
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
+            int id = Integer.parseInt(request.getParameter("miRol"));
+            
+            // obtenemos un objeto de tipo rol con el id. del rol obtenido
+            // anteriormente
+            Rol rol = RolDB.findRolById(id);
 
            
             // store data in User object and save User Object in database
-            User user = new User(firstName, lastName, email);
+            User user = new User(firstName, lastName, email, rol);
             int result = UserDB.insert(user);
 
             //si resultado es mayor que 0 entonces se realizó con éxito la operación

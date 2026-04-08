@@ -15,8 +15,8 @@
     </session-config>
     
     <welcome-file-list>
-        <welcome-file>index.html</welcome-file>
-        <welcome-file>listado-de-usuarios.jsp</welcome-file>
+        <welcome-file>emailList</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
     
     <filter>

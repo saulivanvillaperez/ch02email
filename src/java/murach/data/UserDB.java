@@ -16,7 +16,7 @@ import java.util.List;
 public class UserDB {
 
     /**
-     * Inserta un nuevo usuario en la bd
+     * Inserta un usuario nuevo en la bd
      *
      * @param user
      * @return
@@ -31,8 +31,8 @@ public class UserDB {
 
         // Consulta SQL para insertar un nuevo usuario en la tabla 'user'
         String query
-                = "INSERT INTO user (Email, FirstName, LastName) "
-                + "VALUES (?, ?, ?)";
+                = "INSERT INTO user (Email, FirstName, LastName, Id) "
+                + "VALUES (?, ?, ?, ?)";
         try {
             // Prepara la declaración SQL
             ps = connection.prepareStatement(query);
@@ -41,6 +41,7 @@ public class UserDB {
             ps.setString(1, user.getEmail());
             ps.setString(2, user.getFirstName());
             ps.setString(3, user.getLastName());
+            ps.setInt(4, user.getRol().getId());
 
             // Ejecuta la actualización de la base de datos y retorna el número de filas afectadas
             return ps.executeUpdate();
