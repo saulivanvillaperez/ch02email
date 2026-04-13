@@ -8,6 +8,7 @@ import murach.business.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import murach.business.Rol;
 
 /**
@@ -158,13 +159,15 @@ public class UserDB {
 
         String query = "UPDATE user SET "
                 + "FirstName = ?, "
-                + "LastName = ? "
+                + "LastName = ?, "
+                + "Id = ? "
                 + "WHERE Email = ?";
         try {
             ps = connection.prepareStatement(query);
             ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setString(3, user.getEmail());
+            ps.setString(2, user.getLastName());           
+            ps.setInt(3, user.getRol().getId());
+            ps.setString(4, user.getEmail());
 
             return ps.executeUpdate();
         } catch (SQLException e) {
@@ -189,20 +192,34 @@ public class UserDB {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        String query = "SELECT * FROM user "
-                + "WHERE Email = ?";
+        String query = "SELECT * FROM user, rol "
+                + "WHERE Email = ? and user.Id = rol.Id";
         try {
             ps = connection.prepareStatement(query);
             ps.setString(1, email);
             rs = ps.executeQuery();
+            
             User user = null;
+            
+            Rol rol = null;
+            
             if (rs.next()) {
                 user = new User();
                 user.setFirstName(rs.getString("FirstName"));
                 user.setLastName(rs.getString("LastName"));
-                user.setEmail(rs.getString("Email"));
+                user.setEmail(rs.getString("Email"));               
+                
+                
+                // creamos la instanciación para el objeto rol
+                rol = new Rol(rs.getInt("Id"), rs.getString("Nombre"), rs.getString("Descripcion"));
+                
+                // asignamos el objeto rol al campo rol de user
+                user.setRol(rol);
+                
             }
+            
             return user;
+            
         } catch (SQLException e) {
             System.out.println(e);
             Error.descripcion = e.getMessage();

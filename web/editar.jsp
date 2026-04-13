@@ -4,7 +4,8 @@
     Author     : GoLdE
 --%>
 
-<%@page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
+<%@ page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -53,6 +54,16 @@
                             <label for="last-name" class="form-label">Last Name:</label>
                             <input type="text" class="form-control" id="lastName" 
                                    placeholder="Enter Last Name" name="lastName" value="${user.lastName}" required>
+                        </div>
+                        
+                         <div class='mb-3 mt-3'>
+                            <label for='miSelect'>Rol: </label>
+                            <select class='form-control' id='miRol' name='miRol'>
+                                <!-- uso de JSTL para iterar el ArrayList -->
+                                <c:forEach var="opcion" items="${roles}">
+                                    <option value='${opcion.id}' ${opcion eq user.rol.nombre ? 'selected' : ''}>${opcion.nombre}</option>
+                                </c:forEach>
+                            </select>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Enviar</button>

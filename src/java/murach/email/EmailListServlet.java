@@ -63,18 +63,30 @@ public class EmailListServlet extends HttpServlet {
             //creamos un objeto de tipo user y buscamos sus datos en la bd
             User user = UserDB.findUserById(email);
             
+            //creamos una lista para mandar todos los roles
+            List<Rol> roles = RolDB.getAllRols();
+            
             // establecemos el atributo user para mostrar sus datos en la página
-            request.setAttribute("user", user);           
+            request.setAttribute("user", user);
+            
+            // enviamos la lista de roles
+            request.setAttribute("roles", roles);
             
             url = "/editar.jsp";
         } else if (action.equals("editar-usuario")){ // se almacenan los cambios en la bd
             String firstName = request.getParameter("firstName");
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
-
+            
+            int id = Integer.parseInt(request.getParameter("miRol")); //obtiene el Id. del rol
+            
+            // obtenemos un objeto de tipo rol con el id. del rol obtenido
+            // anteriormente
+            Rol rol = RolDB.findRolById(id);
+            
            
             // store data in User object and save User Object in database
-            User user = new User(firstName, lastName, email);
+            User user = new User(firstName, lastName, email, rol);
             int result = UserDB.update(user);
 
             //si resultado es mayor que 0 entonces se realizó con éxito la operación
